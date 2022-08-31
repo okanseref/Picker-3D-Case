@@ -14,6 +14,8 @@ public class UIService : MonoBehaviour
 
     [Header("Gameplay Screen")]
     [SerializeField] TextMeshProUGUI levelTitle;
+    [SerializeField] GameObject fillBackground;
+    [SerializeField] Image filledBar;
     
     //[Header("Fail Screen")]
 
@@ -33,6 +35,7 @@ public class UIService : MonoBehaviour
     }
     private void Start()
     {
+        ToggleFillPanel(false);
         Idle();
     }
     public void SetLevelTitle() 
@@ -45,6 +48,16 @@ public class UIService : MonoBehaviour
         gameplayScreen.SetActive(type == PanelType.Gameplay);
         failScreen.SetActive(type == PanelType.Fail);
         endGameScreen.SetActive(type == PanelType.EndGame);
+    }
+
+    public void ToggleFillPanel(bool active)
+    {
+        fillBackground.SetActive(active);
+        filledBar.fillAmount = 0;
+    }
+    public void SetFillPanel(float value)
+    {
+        filledBar.fillAmount = value;
     }
     public void Idle()
     {
@@ -61,6 +74,5 @@ public class UIService : MonoBehaviour
     public void NextLevel()
     {
         ChangePanel(PanelType.Start);
-
     }
 }

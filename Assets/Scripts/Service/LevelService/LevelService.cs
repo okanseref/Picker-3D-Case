@@ -56,6 +56,7 @@ public class LevelService : MonoBehaviour
     public void LevelFinished()
     {
         Destroy(currentLevel);
+        MainService.instance.dataService.currentLevel++;
         currentLevel = nextLevel;
         int levelLength = currentLevel.GetComponent<Level>().levelLength;
         endGame.transform.position = new Vector3(0, 0, levelLength * 5 + currentZ);

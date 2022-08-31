@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     }
     public Movement movement;
     public Clicker clicker;
+    public GameObject rotatingArms;
     public List<GameObject> collisionList = new List<GameObject>();//to prevent multiple collisions
     bool levelEnded = false;
     Rigidbody rb;
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
         movement = GetComponent<Movement>();
         rb = GetComponent<Rigidbody>();
         clicker = GetComponent<Clicker>();
+        rotatingArms.SetActive(false);
     }
 
     void Update()
@@ -50,7 +52,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             
-            movement.enabled = false;
+            movement.moveEnabled = false;
             clicker.clickDetection = false;
         }
     }
@@ -63,16 +65,30 @@ public class PlayerController : MonoBehaviour
         if (other.tag.Equals("PitStopper"))
         {
             collisionList.Add(other.gameObject);
+            rotatingArms.SetActive(false);
             movement.currentZspeed = 0;
         }else if (other.tag.Equals("EndGame"))
         {
             collisionList.Add(other.gameObject);
             SwitchMode(Mode.Endgame);
             transform.DOMoveX(0, 0.2f);
+            MainService.instance.uiService.ToggleFillPanel(true);
         }else if (other.tag.Equals("RampEnd"))
         {
             SwitchMode(Mode.None);
-        }else if (other.tag.Equals("MultiplierCube"))
+            MainService.instance.uiService.ToggleFillPanel(false);
+        }else if (other.tag.Equals("PowerUp"))
+        {
+            other.gameObject.SetActive(false);
+            rotatingArms.SetActive(true);
+            Sequence seq = DOTween.Sequence();
+            seq.AppendInterval(3f);
+            seq.AppendCallback(() =>
+            {
+                rotatingArms.SetActive(false);
+            });
+        }
+        else if (other.tag.Equals("MultiplierCube"))
         {
             if (levelEnded)
             {
@@ -81,12 +97,12 @@ public class PlayerController : MonoBehaviour
             levelEnded = true;
             rb.velocity = Vector3.zero;
             rb.constraints = RigidbodyConstraints.FreezeAll;
+            MainService.instance.uiService.ChangePanel(UIService.PanelType.EndGame);
             Sequence seq = DOTween.Sequence();
             seq.AppendInterval(0.5f);
             seq.Append(transform.DOMove(MainService.instance.levelService.nextLevel.transform.position, 0.5f));
             seq.AppendCallback(() =>
             {
-                MainService.instance.uiService.ChangePanel(UIService.PanelType.EndGame);
                 MainService.instance.gameplayService.NextLevel();
             });
         }

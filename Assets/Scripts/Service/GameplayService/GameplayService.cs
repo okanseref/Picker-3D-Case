@@ -37,6 +37,6 @@ public class GameplayService : MonoBehaviour
         MainService.instance.levelService.LevelFinished();
         playerController.collisionList.Clear();
         playerController.transform.position = MainService.instance.levelService.currentLevel.transform.position;
-        MainService.instance.uiService.ChangePanel(UIService.PanelType.Start);
+        //MainService.instance.uiService.ChangePanel(UIService.PanelType.Start);
     }
 }

@@ -6,6 +6,7 @@ public class Clicker : MonoBehaviour
 {
     public bool clickDetection = false;
     public float forwardSpeed = 400;
+    public float maxSpeed = 800;
     public float speedIncrease = 40f;
     float currentSpeed = 1f;
     Rigidbody rb;
@@ -29,6 +30,9 @@ public class Clicker : MonoBehaviour
         if (clickDetection&&Input.GetMouseButtonDown(0))
         {
             currentSpeed += speedIncrease;
+            currentSpeed = Mathf.Clamp(currentSpeed,forwardSpeed, maxSpeed);
+            //print(currentSpeed - forwardSpeed / maxSpeed - forwardSpeed);
+            MainService.instance.uiService.SetFillPanel((currentSpeed - forwardSpeed) / (maxSpeed - forwardSpeed));
         }
     }
     private void FixedUpdate()

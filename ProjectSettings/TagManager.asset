@@ -10,6 +10,10 @@ TagManager:
   - MultiplierCube
   - EndGame
   - RampEnd
+  - Arm
+  - PowerUp
+  - BigBall
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -19,8 +23,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Arm
+  - Player
   - 
   - 
   - 
