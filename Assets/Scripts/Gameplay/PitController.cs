@@ -11,6 +11,7 @@ public class PitController : MonoBehaviour
     public GameObject ground_under;
     public List<GameObject> balls;
     bool isCompleted = false;
+    bool failed = false;
     Sequence loseSequence;
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,7 @@ public class PitController : MonoBehaviour
         seq.AppendInterval(1f);
         seq.AppendCallback(() =>
         {
+            MainService.instance.soundService.PlaySound(1, 1f);
             foreach (GameObject ball in balls)
             {
                 MainService.instance.poolService.PushObject(PoolService.PoolType.ball, ball);
@@ -60,7 +62,7 @@ public class PitController : MonoBehaviour
             MainService.instance.gameplayService.playerController.movement.ResetSpeed();
         });
     }
-    private void RefreshText()
+    public void RefreshText()
     {
         int currentBalls = balls.Count;
         currentBalls = Mathf.Clamp(currentBalls, 0, required_balls);
@@ -74,11 +76,12 @@ public class PitController : MonoBehaviour
         loseSequence.AppendCallback(() =>
         {
             MainService.instance.uiService.ChangePanel(UIService.PanelType.Fail);
+            failed = true;
         });
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag.Equals("Ball"))
+        if (other.tag.Equals("Ball")&& !failed)
         {
             if (!balls.Contains(other.gameObject))
             {

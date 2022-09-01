@@ -13,15 +13,20 @@ public class PlayerController : MonoBehaviour
     }
     public Movement movement;
     public Clicker clicker;
+    public InsideCounter insideCounter;
     public GameObject rotatingArms;
     public List<GameObject> collisionList = new List<GameObject>();//to prevent multiple collisions
     bool levelEnded = false;
     Rigidbody rb;
-    void Start()
+     void Awake()
     {
         movement = GetComponent<Movement>();
         rb = GetComponent<Rigidbody>();
         clicker = GetComponent<Clicker>();
+    }
+    void Start()
+    {
+
         rotatingArms.SetActive(false);
     }
 
@@ -29,10 +34,14 @@ public class PlayerController : MonoBehaviour
     {
         
     }
+    public void StopSpeed()
+    {
+        movement.moveEnabled = false;
+    }
     public void ResetPlayer()
     {
         levelEnded = false;
-        transform.rotation = Quaternion.identity;
+        movement.ResetSpeed();
     }
     public void SwitchMode(Mode mode)
     {
@@ -67,6 +76,10 @@ public class PlayerController : MonoBehaviour
             collisionList.Add(other.gameObject);
             rotatingArms.SetActive(false);
             movement.currentZspeed = 0;
+            foreach (GameObject item in insideCounter.list)
+            {
+                item.GetComponent<Rigidbody>().AddForce(2*(Vector3.forward + Vector3.up),ForceMode.VelocityChange);
+            }
         }else if (other.tag.Equals("EndGame"))
         {
             collisionList.Add(other.gameObject);
@@ -97,10 +110,14 @@ public class PlayerController : MonoBehaviour
             levelEnded = true;
             rb.velocity = Vector3.zero;
             rb.constraints = RigidbodyConstraints.FreezeAll;
+            Vector3 movePosition = MainService.instance.levelService.nextLevel.transform.position;
+            movePosition.y += 0.2f;
+            transform.rotation = Quaternion.identity;
             MainService.instance.uiService.ChangePanel(UIService.PanelType.EndGame);
             Sequence seq = DOTween.Sequence();
             seq.AppendInterval(0.5f);
-            seq.Append(transform.DOMove(MainService.instance.levelService.nextLevel.transform.position, 0.5f));
+            seq.Append(transform.DOMove(movePosition, 0.5f));
+            seq.AppendInterval(0.5f);
             seq.AppendCallback(() =>
             {
                 MainService.instance.gameplayService.NextLevel();

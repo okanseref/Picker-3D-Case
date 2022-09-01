@@ -5,6 +5,7 @@ using UnityEngine;
 public class DataService : MonoBehaviour
 {
     public int currentLevel;
+    public int resumeLevelIndex; //when levels are random. save last level
     public bool soundOn = true;
     public bool vibrationOn = true;
     private void Awake()
@@ -16,17 +17,15 @@ public class DataService : MonoBehaviour
         soundOn = PlayerPrefs.GetInt("soundOn", 1) == 1;
         vibrationOn = PlayerPrefs.GetInt("vibrationOn", 1) == 1;
         currentLevel = PlayerPrefs.GetInt("currentLevel", 0);
+        resumeLevelIndex = PlayerPrefs.GetInt("resumeLevelIndex", -1);
         Debug.Log("Data loaded successfuly");
     }
     public void SaveData()
     {
         PlayerPrefs.SetInt("currentLevel", currentLevel);
+        PlayerPrefs.SetInt("resumeLevelIndex", resumeLevelIndex);
         PlayerPrefs.SetInt("soundOn", soundOn ? 1 : 0);
         PlayerPrefs.SetInt("vibrationOn", vibrationOn ? 1 : 0);
-    }
-    public int GetUnloopedLevel()
-    {
-        return currentLevel % MainService.instance.levelService.levels.Length;
     }
     public void SetSound(bool soundBool)
     {

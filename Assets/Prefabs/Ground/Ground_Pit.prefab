@@ -345,7 +345,7 @@ GameObject:
   - component: {fileID: 217497848721081602}
   m_Layer: 0
   m_Name: PitGround
-  m_TagString: Untagged
+  m_TagString: PitGround
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1217,9 +1217,10 @@ GameObject:
   m_Component:
   - component: {fileID: 217497850140395904}
   - component: {fileID: 217497850140395919}
+  - component: {fileID: 8922017246853016830}
   m_Layer: 0
   m_Name: Ground_Pit
-  m_TagString: Untagged
+  m_TagString: PitGround
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1255,8 +1256,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   required_balls: 10
   countText: {fileID: 217497849041437175}
-  ground_under: {fileID: 0}
+  ground_under: {fileID: 217497849381715814}
   balls: []
+--- !u!65 &8922017246853016830
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217497850140395905}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 1, z: 5}
+  m_Center: {x: 0, y: -0.75, z: 0}
 --- !u!1 &217497850220925479
 GameObject:
   m_ObjectHideFlags: 0

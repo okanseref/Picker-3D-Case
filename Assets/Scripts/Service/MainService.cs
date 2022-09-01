@@ -27,6 +27,7 @@ public class MainService : MonoBehaviour
     }
     void Awake()
     {
+        Application.targetFrameRate = 60;
         SetService();
         DontDestroyOnLoad(this);
     }

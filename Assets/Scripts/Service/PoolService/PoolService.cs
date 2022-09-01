@@ -9,6 +9,7 @@ public class PoolService : MonoBehaviour
         ball,
         breakFX
     }
+    public int maxLimit = 20;
     public GameObject ball_prefab;
     public GameObject breakFX_prefab;
     Queue<GameObject> ball_queue = new Queue<GameObject>();
@@ -17,11 +18,11 @@ public class PoolService : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 8; i++)
         {
             CreateNewStock(PoolType.ball);
         }
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 10; i++)
         {
             CreateNewStock(PoolType.breakFX);
         }
@@ -31,7 +32,14 @@ public class PoolService : MonoBehaviour
     {
         poolObject.transform.SetParent(null);
         poolObject.SetActive(false);
-        GetQueue(type).Enqueue(poolObject);
+        if(GetQueue(type).Count> maxLimit)
+        {
+            Destroy(poolObject);
+        }
+        else
+        {
+            GetQueue(type).Enqueue(poolObject);
+        }
     }
     private void CreateNewStock(PoolType type)
     {

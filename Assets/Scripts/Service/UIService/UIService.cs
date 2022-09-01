@@ -35,6 +35,7 @@ public class UIService : MonoBehaviour
     }
     private void Start()
     {
+        SetLevelTitle();
         ToggleFillPanel(false);
         Idle();
     }
@@ -61,7 +62,7 @@ public class UIService : MonoBehaviour
     }
     public void Idle()
     {
-        MainService.instance.gameplayService.Restart();
+        //MainService.instance.gameplayService.Idle();
     }
     public void Restart()
     {

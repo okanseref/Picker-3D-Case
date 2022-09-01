@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,8 @@ public class LevelService : MonoBehaviour
     GameObject endGame;
     public GameObject currentLevel,nextLevel;
     List<GameplayState> stateObjectList;
-    const float rampDistance = 128.5f;
+    const float rampDistance = 125f;
+    int currentLevelIndex, nextLevelIndex;
     private void Awake()
     {
         levels = Resources.LoadAll("Prefabs/Levels", typeof(GameObject)).Cast<GameObject>().ToArray();
@@ -20,8 +22,8 @@ public class LevelService : MonoBehaviour
     {
         endGame = Instantiate(endGamePrefab);
         currentZ = 0;
-        CreateLevel();
-        CreateNextLevel();
+        StartCoroutine(CreateLevel());
+        //CreateNextLevel();
     }
     public void StartLevel()
     {
@@ -37,31 +39,62 @@ public class LevelService : MonoBehaviour
     //        stateObjectList.Add(stateObject);
     //    }
     //}
-    private void CreateLevel()
+    IEnumerator CreateLevel()
     {
-        currentLevel = Instantiate(levels[GetLevelIndex(MainService.instance.dataService.currentLevel)]);
-        int levelLength = currentLevel.GetComponent<Level>().levelLength;
+        currentLevelIndex = GetLevelIndex(MainService.instance.dataService.currentLevel,true);
+        currentLevel = Instantiate(levels[currentLevelIndex]);
+        currentLevel.SetActive(false);
+        yield return new WaitUntil(() => currentLevel != null);
+        currentLevel.SetActive(true);
+        Level levelScript = currentLevel.GetComponent<Level>();
+        int levelLength = levelScript.levelLength;
+        levelScript.ReleaseRigidbodies();
         currentLevel.transform.position = new Vector3(0, 0, currentZ);
-        endGame.transform.position = new Vector3(0, 0, levelLength * 5 + currentZ);
+        print(levelLength+" "+levelScript.levelLength+levelScript.gameObject.name+ currentLevel.name);
+        endGame.transform.position = new Vector3(0, 0, (levelLength - 1) * 7 + currentZ);
         currentZ += (levelLength * 7)+rampDistance;
+        StartCoroutine(CreateNextLevel());
+
     }
-    private void CreateNextLevel()
+    IEnumerator CreateNextLevel()
     {
-        nextLevel = Instantiate(levels[GetLevelIndex(MainService.instance.dataService.currentLevel+1)]);
-        int levelLength = nextLevel.GetComponent<Level>().levelLength;
+        nextLevelIndex = GetLevelIndex(MainService.instance.dataService.currentLevel + 1,false);
+        nextLevel = Instantiate(levels[nextLevelIndex]);
+        nextLevel.SetActive(false);
+        yield return new WaitUntil(() => nextLevel != null);
+        nextLevel.SetActive(true);
+        Level levelScript = nextLevel.GetComponent<Level>();
+        levelScript.ReleaseRigidbodies(); 
         nextLevel.transform.position = new Vector3(0, 0, currentZ);
         //currentZ += levelLength * 7;
         //carry end game
+    }
+    public IEnumerator RestartLevel()
+    {
+        Vector3 pos = currentLevel.transform.position;
+        Destroy(currentLevel);
+        currentLevel = Instantiate(levels[currentLevelIndex]);
+        currentLevel.transform.position = pos;
+        MainService.instance.gameplayService.ResetPlayerPos();
+        // prevent virtual camera glitching
+        MainService.instance.gameplayService.vcam.GetCinemachineComponent<CinemachineTransposer>().m_BindingMode = CinemachineTransposer.BindingMode.LockToTargetWithWorldUp;
+        yield return new WaitForSeconds(0.2F);
+        Level levelScript = currentLevel.GetComponent<Level>();
+        levelScript.ReleaseRigidbodies();
+        MainService.instance.gameplayService.vcam.GetCinemachineComponent<CinemachineTransposer>().m_BindingMode = CinemachineTransposer.BindingMode.SimpleFollowWithWorldUp;
+
     }
     public void LevelFinished()
     {
         Destroy(currentLevel);
         MainService.instance.dataService.currentLevel++;
         currentLevel = nextLevel;
+        currentLevelIndex = nextLevelIndex;
+        MainService.instance.dataService.resumeLevelIndex = currentLevelIndex;
         int levelLength = currentLevel.GetComponent<Level>().levelLength;
-        endGame.transform.position = new Vector3(0, 0, levelLength * 5 + currentZ);
-        currentZ += rampDistance;
-        CreateNextLevel();
+        endGame.transform.position = new Vector3(0, 0, (levelLength-1) * 7 + currentZ);
+        currentZ += rampDistance+ levelLength * 7;
+        StartCoroutine(CreateNextLevel());
     }
     private void Update()
     {
@@ -70,11 +103,18 @@ public class LevelService : MonoBehaviour
             LevelFinished();
         }
     }
-    private int GetLevelIndex(int levelNo)
+    private int GetLevelIndex(int levelNo,bool isFirstLevel)
     {
         if (levelNo >= levels.Length)
         {
-            return Random.Range(0, levels.Length);
+            if (MainService.instance.dataService.resumeLevelIndex != -1&& isFirstLevel)
+            {
+                return MainService.instance.dataService.resumeLevelIndex;
+            }
+            else
+            {
+                return Random.Range(0, levels.Length);
+            }
         }
         else
         {

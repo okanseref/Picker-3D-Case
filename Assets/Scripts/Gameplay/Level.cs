@@ -12,6 +12,15 @@ public class Level : MonoBehaviour
         
     }
 
+    public void ReleaseRigidbodies()
+    {
+        Rigidbody[] Rigidbodies;
+        Rigidbodies = transform.GetChild(1).GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody item in Rigidbodies)
+        {
+            item.constraints = RigidbodyConstraints.None;
+        }
+    }
     // Update is called once per frame
     void Update()
     {

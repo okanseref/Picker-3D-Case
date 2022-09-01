@@ -8,16 +8,28 @@ public class SoundService : MonoBehaviour,LevelPreparer
 
     [SerializeField] AudioSource audioSource;
     [SerializeField] AudioClip[] sounds;
+    public int slotCount = 10;
     void Start()
     {
 
     }
-    public void PlaySound(int index)
+    public void PlaySound(int index,float volume)
     {
         if (MainService.instance.dataService.soundOn == true)
         {
-            audioSource.PlayOneShot(sounds[index], 1f);
+            if (slotCount > 0)
+            {
+                slotCount--;
+                audioSource.PlayOneShot(sounds[index], volume);
+                StartCoroutine(ReleaseSlot());
+            }
+
         }
+    }
+    IEnumerator ReleaseSlot()
+    {
+        yield return new WaitForSeconds(0.3f);
+        slotCount++;
     }
     public void PlaySoundDelayed(int index,float delay)
     {
