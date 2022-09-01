@@ -15,7 +15,6 @@ public class PoolService : MonoBehaviour
     Queue<GameObject> ball_queue = new Queue<GameObject>();
     Queue<GameObject> breakFX_queue = new Queue<GameObject>();
 
-    // Start is called before the first frame update
     void Start()
     {
         for (int i = 0; i < 8; i++)

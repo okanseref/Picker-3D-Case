@@ -11,7 +11,6 @@ public class LevelService : MonoBehaviour
     float currentZ = 0;
     GameObject endGame;
     public GameObject currentLevel,nextLevel;
-    List<GameplayState> stateObjectList;
     const float rampDistance = 125f;
     int currentLevelIndex, nextLevelIndex;
     private void Awake()
@@ -23,22 +22,7 @@ public class LevelService : MonoBehaviour
         endGame = Instantiate(endGamePrefab);
         currentZ = 0;
         StartCoroutine(CreateLevel());
-        //CreateNextLevel();
     }
-    public void StartLevel()
-    {
-        //stateObjectList = new List<GameplayState>();
-        //FindStateObjects(); 
-    }
-    //private void FindStateObjects()//Objects that has something to do when game is paused
-    //{
-    //    stateObjectList.Clear();
-    //    var stateObjects = FindObjectsOfType<MonoBehaviour>().OfType<GameplayState>();
-    //    foreach (GameplayState stateObject in stateObjects)
-    //    {
-    //        stateObjectList.Add(stateObject);
-    //    }
-    //}
     IEnumerator CreateLevel()
     {
         currentLevelIndex = GetLevelIndex(MainService.instance.dataService.currentLevel,true);
@@ -66,8 +50,6 @@ public class LevelService : MonoBehaviour
         Level levelScript = nextLevel.GetComponent<Level>();
         levelScript.ReleaseRigidbodies(); 
         nextLevel.transform.position = new Vector3(0, 0, currentZ);
-        //currentZ += levelLength * 7;
-        //carry end game
     }
     public IEnumerator RestartLevel()
     {
@@ -96,18 +78,11 @@ public class LevelService : MonoBehaviour
         currentZ += rampDistance+ levelLength * 7;
         StartCoroutine(CreateNextLevel());
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            LevelFinished();
-        }
-    }
     private int GetLevelIndex(int levelNo,bool isFirstLevel)
     {
-        if (levelNo >= levels.Length)
+        if (levelNo >= levels.Length)//Random levels
         {
-            if (MainService.instance.dataService.resumeLevelIndex != -1&& isFirstLevel)
+            if (MainService.instance.dataService.resumeLevelIndex != -1&& isFirstLevel)//save last level if it is random
             {
                 return MainService.instance.dataService.resumeLevelIndex;
             }

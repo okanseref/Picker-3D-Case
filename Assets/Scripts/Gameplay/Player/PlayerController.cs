@@ -26,14 +26,9 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
-
         rotatingArms.SetActive(false);
     }
 
-    void Update()
-    {
-        
-    }
     public void StopSpeed()
     {
         movement.moveEnabled = false;

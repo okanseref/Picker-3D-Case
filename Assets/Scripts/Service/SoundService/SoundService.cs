@@ -3,16 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundService : MonoBehaviour,LevelPreparer
+public class SoundService : MonoBehaviour
 {
 
     [SerializeField] AudioSource audioSource;
     [SerializeField] AudioClip[] sounds;
     public int slotCount = 10;
-    void Start()
-    {
-
-    }
     public void PlaySound(int index,float volume)
     {
         if (MainService.instance.dataService.soundOn == true)
@@ -48,9 +44,5 @@ public class SoundService : MonoBehaviour,LevelPreparer
 
             vb.Vibrate(ms);
         }
-    }
-    public void PrepareLevel()
-    {
-        audioSource.Stop();
     }
 }

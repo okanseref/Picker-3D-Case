@@ -9,13 +9,12 @@ public class GameplayService : MonoBehaviour
     public PlayerController playerController;
     public CinemachineVirtualCamera vcam;
 
-    // Start is called before the first frame update
     void Awake()
     {
         playerController = FindObjectOfType<PlayerController>();
     }
 
-    public void Idle()
+    public void Idle() //Waiting player
     {
         playerController.collisionList.Clear();
         ResetPlayerPos();
@@ -23,14 +22,14 @@ public class GameplayService : MonoBehaviour
         playerController.SwitchMode(PlayerController.Mode.None);
         playerController.ResetPlayer();
     }
-    public void StartGame()
+    public void StartGame() //Start running
     {
         MainService.instance.uiService.ChangePanel(UIService.PanelType.Gameplay);
         MainService.instance.uiService.SetLevelTitle();
         playerController.SwitchMode(PlayerController.Mode.Normal);
 
     }
-    public void Restart()
+    public void Restart()//Restart current level only running
     {
         print("Restart");
         playerController.collisionList.Clear();
@@ -51,16 +50,13 @@ public class GameplayService : MonoBehaviour
         MainService.instance.levelService.LevelFinished();
         playerController.collisionList.Clear();
         ResetPlayerPos();
-        //MainService.instance.uiService.ChangePanel(UIService.PanelType.Start);
     }
     public void ResetPlayerPos()
     {
-        //vcam.Follow = null;
         Vector3 movePosition = MainService.instance.levelService.currentLevel.transform.position;
         movePosition.y += 0.2f;
         playerController.GetComponent<Rigidbody>().position = movePosition;
         playerController.transform.rotation = Quaternion.identity;
         playerController.ResetPlayer();
-        //vcam.Follow = playerController.transform;
     }
 }

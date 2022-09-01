@@ -9,16 +9,11 @@ using UnityEngine.UI;
 
 public class UIService : MonoBehaviour
 {
-    [Header("Start Screen")]
-    [SerializeField] GameObject handIcon;
 
     [Header("Gameplay Screen")]
     [SerializeField] TextMeshProUGUI levelTitle;
     [SerializeField] GameObject fillBackground;
     [SerializeField] Image filledBar;
-    
-    //[Header("Fail Screen")]
-
 
     [Header("Panels")]
     [SerializeField] GameObject startScreen;
@@ -37,7 +32,6 @@ public class UIService : MonoBehaviour
     {
         SetLevelTitle();
         ToggleFillPanel(false);
-        Idle();
     }
     public void SetLevelTitle() 
     {
@@ -59,10 +53,6 @@ public class UIService : MonoBehaviour
     public void SetFillPanel(float value)
     {
         filledBar.fillAmount = value;
-    }
-    public void Idle()
-    {
-        //MainService.instance.gameplayService.Idle();
     }
     public void Restart()
     {

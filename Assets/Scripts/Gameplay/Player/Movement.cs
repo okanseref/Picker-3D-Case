@@ -17,7 +17,6 @@ public class Movement : MonoBehaviour
     }
     void Start()
     {
-        //moveEnabled = true;
         ScreenWidth = Screen.width;
         currentZspeed = playerZSpeed;
         moveActive = false;
@@ -26,7 +25,6 @@ public class Movement : MonoBehaviour
     {
         currentZspeed = playerZSpeed;
     }
-    // Update is called once per frame
     void Update()
     {
         if (moveEnabled == false)
